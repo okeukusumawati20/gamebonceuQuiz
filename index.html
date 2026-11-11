@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="su"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BounceQuiz Bahasa Sunda</title>
+<style>
+:root{color-scheme:light;--bg:#fff7e0;--card:#fff;--ink:#2b2a4c;--mut:#6b6a8a;--p:#ff7a59;--g:#2bb673;--r:#e5484d;--b:#3b82f6;--y:#ffc93c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS",Verdana,sans-serif;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding:12px}
+header{background:linear-gradient(135deg,#ff7a59,#ffc93c);border-radius:18px;padding:14px 16px;color:#2b2a4c;box-shadow:0 4px 0 #e0623f}
+h1{margin:0 0 4px;font-size:1.5rem}header p{margin:2px 0;font-size:.86rem}
+.info{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.chip{background:#fff;border-radius:99px;padding:4px 12px;font-size:.85rem;font-weight:700}
+#time{background:var(--ink);color:#fff}#time.low{background:var(--r);animation:p 1s infinite}
+@keyframes p{50%{opacity:.6}}
+canvas{width:100%;height:90px;display:block;margin:10px 0;background:#e8f7ff;border-radius:14px;border:3px solid #bfe6fb}
+.bar{height:10px;background:#f1e3b5;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--g);transition:width .3s}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-top:10px;box-shadow:0 4px 0 #ead9a0}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;border-radius:8px;padding:2px 9px;margin:0 6px 8px 0;background:#e8f0ff;color:var(--b)}
+.q{font-size:1.05rem;font-weight:700;margin:4px 0 12px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:2px solid #e6e3f5;border-radius:12px;padding:10px;margin:8px 0;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--b)}.opt.sel{border-color:var(--b);background:#eef4ff}
+.opt.ok{border-color:var(--g);background:#e6f8ee}.opt.no{border-color:var(--r);background:#ffecec}
+.opt input{margin-top:5px;accent-color:var(--b)}
+.st{border:2px solid #e6e3f5;border-radius:12px;padding:10px;margin:8px 0}.st div{margin-top:6px;display:flex;gap:8px}
+.st label{border:2px solid #d8d5ee;border-radius:9px;padding:4px 14px;cursor:pointer;font-weight:700}
+.st label.sel{background:#eef4ff;border-color:var(--b)}.st.ok{border-color:var(--g)}.st.no{border-color:var(--r)}
+.st input{display:none}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 20px;cursor:pointer;color:#fff;background:var(--p);box-shadow:0 3px 0 #c9553a}
+button:active{transform:translateY(2px);box-shadow:none}button:disabled{opacity:.45;cursor:not-allowed}
+.sec{background:var(--b);box-shadow:0 3px 0 #2563c4}
+.exp{margin-top:12px;padding:12px;border-radius:12px;background:#fff6d6;border-left:6px solid var(--y);font-size:.93rem}
+.row{display:flex;justify-content:space-between;gap:8px;margin-top:14px;flex-wrap:wrap}
+.modal{position:fixed;inset:0;background:rgba(43,42,76,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal .card{max-width:420px;width:100%}input[type=text],select{width:100%;padding:10px;border-radius:10px;border:2px solid #d8d5ee;font:inherit;margin:6px 0 12px}
+.big{font-size:3rem;font-weight:800;color:var(--p);text-align:center}
+.nav{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.nav b{width:28px;height:28px;border-radius:8px;background:#f1e3b5;font-size:.75rem;display:flex;align-items:center;justify-content:center}
+.nav b.c{background:var(--g);color:#fff}.nav b.p{background:var(--y)}.nav b.w{background:var(--r);color:#fff}.nav b.cur{outline:3px solid var(--ink)}
+</style></head><body><div class="wrap">
+<header>
+<h1>🏀 BounceQuiz Bahasa Sunda</h1>
+<p><b>Materi:</b> Ciri-ciri jeung Struktur Pedaran, Artikel, jeung Tradisi Sunda</p>
+<p><b>Tujuan Pembelajaran:</b> Murid bisa ngaidéntifikasi ciri jeung struktur pedaran, artikel, katut tradisi Sunda.</p>
+<div class="info"><span class="chip">👤 <span id="hn">-</span></span><span class="chip">🏫 Kelas <span id="hk">-</span></span><span class="chip" id="time">⏱ 45:00</span></div>
+</header>
+<canvas id="cv"></canvas>
+<div class="bar"><i id="pb"></i></div>
+<div id="app"></div>
+</div>
+<div class="modal" id="m"><div class="card"><h2 style="margin-top:0">Wilujeng Sumping! 👋</h2>
+<label>Ngaran Murid</label><input type="text" id="nm" placeholder="Tulis ngaran anjeun" autocomplete="off">
+<label>Kelas</label><select id="kl"><option>12A</option><option>12B</option><option>12C</option><option>12D</option><option>12E</option></select>
+<button id="go" style="width:100%">Mimitian Kuis 🚀</button>
+<p style="font-size:.8rem;color:var(--mut)">30 soal • 45 menit • Klik "Cék Jawaban" pikeun ningali pedaran.</p></div></div>
+<script>
+// t:1 pilihan ganda | t:2 pilihan ganda kompleks | t:3 pernyataan Bener/Salah | l:1 gampang,2 sedeng,3 pikasusah
+const Q=[
+{t:1,l:1,q:"Karangan anu ngawawarkeun hiji hal tur dipidangkeun saécés-écésna pikeun nepikeun informasi anyar ka nu maca disebut…",o:["Dongéng","Carpon","Sajak","Téks pedaran (éksposisi)"],a:3,e:"Téks pedaran/éksposisi boga tujuan nepikeun informasi atawa wawaran anyar ka nu maca. Hikmahna: ngabagi élmu nu bener téh mangpaat pikeun batur."},
+{t:1,l:1,q:"Struktur nu tangtu dina téks pedaran nyaéta…",o:["Orientasi, komplikasi, résolusi","Tésis (bubuka), argumén (eusi), panandes (pamungkas)","Bubuka, tiori, métodeu panalungtikan","Judul, rumpaka, amanat"],a:1,e:"Téks pedaran diwangun ku tésis, argumén, jeung panandes. Hikmahna: nu tartib dina nyusun pikiran nunjukkeun rapih jeung disiplin."},
+{t:1,l:1,q:"Téks pedaran anu geus dimuat dina majalah, koran, jurnal, atawa média sosial disebut…",o:["Artikel","Wawacan","Biantara","Pupuh"],a:0,e:"Pedaran nu geus dimuat/dipublikasikeun disebut artikel. Hikmahna: tulisan nu dibaca réa urang kudu bisa dipertanggungjawabkeun."},
+{t:1,l:1,q:"Bagian téks pedaran nu eusina alesan, fakta, jeung sumber pakar pikeun nguatan pamadegan nu nulis nyaéta…",o:["Tésis","Panandes","Argumén","Judul"],a:2,e:"Argumén mangrupa awak/eusi pedaran nu nepikeun fakta jeung sumber pakar nu sah. Hikmahna: pamadegan nu kuat kudu dirojong bukti, lain ukur kahayang."},
+{t:1,l:1,q:"Istilah “tradisi” hartina…",o:["Kaulinan modéren nu anyar muncul","Adat kabiasaan atawa tali paranti nu turun-tumurun ti karuhun","Tulisan dina koran","Pidato resmi pamaréntah"],a:1,e:"Tradisi nyaéta adat kabiasaan/tali paranti turun-tumurun ti karuhun nu masih dilaksanakeun. Hikmahna: ngajaga tradisi hartina ngahargaan karuhun."},
+{t:1,l:2,q:"Nisa nulis artikel pikeun mading ngeunaan sampah di sakola, tapi manéhna nulis, “Kabéh murid kudu nurut kana pamadegan kuring, teu meunang bantahan!” Ciri téks pedaran nu dilanggar nyaéta…",o:["Pidanganana singget jeung akurat","Henteu mihak tur teu maksakeun kahayang nu nulis","Ilaharna ngajawab 5W+1H","Maké basa baku"],a:1,e:"Téks pedaran henteu mihak jeung teu maksakeun kahayang nu nulis. Hikmahna: ngahargaan pamadegan batur téh ciri jalma nu dewasa."},
+{t:1,l:3,q:"Dina upacara Ngalaksa di Rancakalong, Sumedang, tahapan anu aya sanggeus “ngineb” (neundeun béas) nyaéta…",o:["Béwara (musawarah)","Mera (ngabagi-bagi bahan)","Numbuk (nipung béas)","Meuseul (nutu paré)"],a:2,e:"Runtuyanana: béwara, mera, meuseul, ngawasuhan, ngineb, numbuk, ngalaksa. Hikmahna: gawé nu tartib jeung gotong royong ngahasilkeun hasil nu sampurna."},
+{t:1,l:2,q:"Séren Taun, Ngalaksa, jeung Nyangku kaasup kana wanda tradisi…",o:["Upacara daur hirup","Pésta rayat","Upacara kapapaténan","Upacara nuansa kaagamaan wungkul"],a:1,e:"Éta tilu tradisi kaasup upacara adat/pésta rayat. Hikmahna: pésta rayat ngagumulungkeun warga dina rasa sukur."},
+{t:1,l:2,q:"Upacara tingkeban (tujuh bulanan) patali jeung tahapan hirup…",o:["Kakandungan","Kawin","Maot","Sunatan"],a:0,e:"Tingkeban mangrupa upacara daur hirup patali jeung ngariksa nu reuneuh (kakandungan). Hikmahna: ngahargaan jasa indung nu ngandung jeung ngalahirkeun."},
+{t:1,l:3,q:"Dimas hésé disiplin; sanajan sababaraha kali diémutan, manéhna tetep sok talat sabab geus jadi kabiasaan. Paribasa “Adat kakurung ku iga” nu cocog jeung kaayaan Dimas hartina…",o:["Tabéat nu hésé dipiceunna atawa dirobahna","Tabéat nu gampang dirobah","Kabiasaan nu hadé","Kabiasaan nu dipuji ku batur"],a:0,e:"“Adat kakurung ku iga” hartina tabéat nu hésé dipiceunna/dirobahna. Hikmahna: bisaeun ngarobah kabiasaan goréng kudu dimimitian ku niat jeung usaha."},
+{t:2,l:1,q:"Pilih ciri téks pedaran (aya 3 jawaban bener):",o:["Pidanganana singget, pepel, jeung akurat","Ilaharna ngajawab pananya 5W+1H","Basana basajan tur maké basa baku","Maksakeun kahayang nu nulis ka nu maca"],a:[0,1,2],e:"Pedaran singget-akurat, ngajawab 5W+1H, jeung basajan-baku; teu maksakeun kahayang. Hikmahna: jujur dina nepikeun informasi."},
+{t:2,l:2,q:"Ngeunaan panandes dina téks pedaran, pilih nu bener (aya 2 jawaban bener):",o:["Aya dina tungtung téks, paragrap pamungkas","Eusina paneges kana pernyataan awal jeung kacindekan","Eusina fakta anyar nu can dipedar","Eusina ngenalkeun topik nu bakal dipedar"],a:[0,1],e:"Panandes diteundeun di tungtung téks, eusina paneges/kacindekan. Ngenalkeun topik mah tugas tésis. Hikmahna: nutup kalawan jelas nuduhkeun tanggung jawab."},
+{t:2,l:1,q:"Pilih unsur tradisi atawa adat istiadat (aya 3 jawaban bener):",o:["Dipilampah tuluy-tuluyan","Sakurang-kurangna tilu entragan (generasi)","Diturkeun ku jalma lianna","Ngan kungsi dilakukeun sakali"],a:[0,1,2],e:"Tradisi mah tuluy-tuluyan, sakurang-kurangna tilu generasi, jeung diturkeun. Hikmahna: pamuda nu ngalestarikeun tradisi ngajaga jati diri bangsa."},
+{t:2,l:1,q:"Pilih ciri wangun karangan artikel (aya 3 jawaban bener):",o:["Ditulis kalayan asmana (by line story)","Ngandung gagasan aktual, bisa waé kontrovérsial","Orisinal atawa asli","Eusina nyalin tulisan batur tanpa sumber"],a:[0,1,2],e:"Artikel ditulis kalayan asmana, aktual, jeung orisinal. Nyalin tanpa sumber téh plagiat. Hikmahna: jujur jeung ngahargaan karya batur."},
+{t:2,l:2,q:"Ngeunaan artikel ilmiah, pilih nu bener (aya 2 jawaban bener):",o:["Ilaharna dimuat dina jurnal atawa buku prosiding","Strukturna: bubuka, tiori, métodeu, hasil jeung pedaran, kacindekan, daptar acuan","Strukturna ngan bubuka, eusi, jeung panutup","Ilaharna ngan dimuat dina média sosial"],a:[0,1],e:"Artikel ilmiah dimuat dina jurnal/prosiding jeung boga struktur formal; bubuka-eusi-panutup mah ciri semi-ilmiah. Hikmahna: ilmu kudu dirojong ku métodeu nu bener."},
+{t:2,l:2,q:"Fungsi upacara adat nu kasebut dina matéri (aya 2 jawaban bener):",o:["Fungsi konsérvatif budaya (ngamumulé budaya)","Fungsi integratif (ngagumulungkeun sawangan hirup jeung étos)","Ngabédakeun jalma beunghar jeung miskin","Hiburan wungkul tanpa ma’na"],a:[0,1],e:"Upacara adat boga fungsi kaagamaan, sosial, konsérvatif, integratif, jeung édukatif. Hikmahna: tradisi nyambungkeun antar generasi."},
+{t:2,l:2,q:"Pilih unsur struktur upacara tradisi (aya 3 jawaban bener):",o:["Latar upacara (tempat jeung waktu)","Palaku upacara","Properti (alat, pakéan, kadaharan)","Gaya basa pangarang"],a:[0,1,2],e:"Struktur upacara: latar, palaku, properti, jeung tahapan kagiatan. Hikmahna: unggal pagawéan kudu diatur tartib."},
+{t:2,l:3,q:"Sinta rék nulis artikel ngeunaan Séren Taun. Léngkah nu luyu jeung tahapan nulis artikel (aya 3 jawaban bener):",o:["Nangtukeun topik, téma, jeung judul singget (3–5 kecap)","Ngumpulkeun data jeung acuan","Nyarungsum (ngédit) draf awal tulisan","Langsung ngirimkeun tulisan tanpa dibaca deui"],a:[0,1,2],e:"Nulis artikel: tangtukeun topik, kumpulkeun data, kembangkeun, lajeng sarungsum. Hikmahna: sabar jeung teliti ngahasilkeun karya nu hadé."},
+{t:2,l:3,q:"Pilih pasangan téhnik nulis pedaran jeung cirina nu bener (aya 3 jawaban bener):",o:["Idéntifikasi – ngajéntrékeun perkara ku cara medar ciri-cirina","Klasifikasi – ngajéntrékeun ku cara midangkeun papasinganana","Définisi – ngajéntrékeun ku cara méré wangenan atawa katerangan","Prosés – ngajéntrékeun ku cara méré wangenan wungkul"],a:[0,1,2],e:"Prosés téh ngajéntrékeun perkara ku cara néangan jeung méré gambaran prosés nyieunna. Hikmahna: milih cara nu pas ngagampangkeun batur ngarti."},
+{t:2,l:2,q:"Nu kaasup upacara daur hirup (aya 3 jawaban bener):",o:["Tingkeban (tujuh bulanan)","Sunatan (nyepitan)","Pésta dadung","Ngawinkeun"],a:[0,1,3],e:"Tingkeban, sunatan, jeung ngawinkeun kaasup daur hirup; pésta dadung kaasup pésta rayat. Hikmahna: unggal tahapan hirup dipapag kalayan sukur."},
+{t:3,l:1,q:"Séren Taun di Kasepuhan Malasari, Bogor, dipilampah ku warga unggal taun, ti generasi ka generasi.",s:[["Séren Taun kaasup upacara pésta rayat.",1],["Dipilampah tuluy-tuluyan nuduhkeun ciri tradisi.",1],["Séren Taun kaasup upacara kapapaténan.",0]],e:"Séren Taun kaasup pésta rayat jeung dipilampah tuluy-tuluyan; lain upacara kapapaténan. Hikmahna: sukur kana hasil tani."},
+{t:3,l:2,q:"Dina artikel “Ngajaga Basa Sunda”, paragrap awal nyebutkeun basa Sunda kudu dijaga, paragrap tengah méré data, paragrap pamungkas nyimpulkeun.",s:[["Paragrap awal mangrupa tésis.",1],["Paragrap tengah mangrupa argumén nu eusina fakta.",1],["Paragrap pamungkas kaasup argumén.",0]],e:"Paragrap pamungkas téh panandes (kacindekan), lain argumén. Hikmahna: bangga ngagunakeun basa indung."},
+{t:3,l:2,q:"Dewi nulis artikel kontrovérsial ngeunaan kabiasaan maké gadget di sakola, bari nyebutkeun ngaranna salaku panulis.",s:[["Artikel ditulis kalayan asmana (by line story).",1],["Artikel teu meunang kontrovérsial.",0],["Artikel kudu dirojong ku data atawa pamanggih ahli.",1]],e:"Artikel bisa kontrovérsial, tapi kudu dirojong ku data. Hikmahna: wani nepikeun pamadegan bari tanggung jawab."},
+{t:3,l:2,q:"Raka ngaku salaku panulis, tapi nyalin tulisan batur tanpa idin jeung tanpa nyebut sumber.",s:[["Artikel kudu orisinal atawa asli.",1],["Nyalin tulisan batur diidinan lamun judulna diganti.",0],["Panulis kudu ngagunakeun rujukan nu sah.",1]],e:"Nyalin téh plagiat sanajan judulna diganti. Hikmahna: ngahargaan karya batur ciri akhlak nu mulya."},
+{t:3,l:2,q:"Guru ngajelaskeun upacara Ngalaksa di Rancakalong, Sumedang, nu ngabogaan tahapan béwara, mera, meuseul, ngawasuhan, ngineb, numbuk, jeung ngalaksa.",s:[["Ngalaksa mangrupa upacara adat di Rancakalong, Sumedang.",1],["Tahapan Ngalaksa ngan hiji, nyaéta numbuk.",0],["“Ngineb” hartina neundeun béas.",1]],e:"Ngalaksa boga tujuh tahapan; ngineb = neundeun béas. Hikmahna: gotong royong dina unggal tahapan."},
+{t:3,l:2,q:"Warga ngumpul babarengan miara tradisi tiap sasih, tur kolotna ngajarkeun cara ngalaksanakeunana ka barudak ngora.",s:[["Ieu nunjukkeun fungsi integratif tradisi.",1],["Tradisi ngan boga fungsi hiburan.",0],["Ieu nunjukkeun fungsi édukatif tradisi.",1]],e:"Tradisi boga fungsi integratif jeung édukatif, lain hiburan wungkul. Hikmahna: tradisi mawa warga hirup rukun."},
+{t:3,l:2,q:"Pa Ujang jeung adina kakara ngalakukeun hiji kabiasaan anyar minggu kamari, tur teu aya nu nurutan.",s:[["Éta can bisa disebut tradisi sabab teu dipilampah tuluy-tuluyan.",1],["Tradisi cukup dilakukeun ku hiji generasi.",0],["Tradisi mah diturkeun ku jalma lianna.",1]],e:"Tradisi sakurang-kurangna tilu generasi jeung diturkeun. Hikmahna: sabar, tradisi ngan mekar ku waktu."},
+{t:3,l:3,q:"Dina paribasa “Ciri sabumi cara sadésa, sacarana-carana, lain tepak séjén igel”, tradisi atawa adat kabiasaan ilaharna jadi ciri has hiji daérah.",s:[["Hartina tiap daérah boga cara jeung ciri masing-masing.",1],["Hartina kabéh daérah kudu boga tradisi nu sarua.",0],["Paribasa ieu ngagambarkeun tradisi minangka ciri has daérah.",1]],e:"Tiap daérah boga cara jeung ciri béda-béda. Hikmahna: silih hormat dina kabédaan budaya."},
+{t:3,l:3,q:"Dewi nulis artikel pikeun koran lokal, sedengkeun Rina nulis artikel pikeun jurnal élmiah.",s:[["Artikel Dewi kaasup artikel semi-ilmiah.",1],["Artikel Dewi kudu ngabogaan tiori jeung daptar acuan.",0],["Artikel Rina kaasup artikel ilmiah.",1]],e:"Semi-ilmiah (koran) strukturna bubuka-eusi-panutup; ilmiah (jurnal) leuwih formal. Hikmahna: sebutkeun sumber sakumaha mistina."},
+{t:3,l:2,q:"Rudi nyebutkeun, “Tumpeng mah ngan sakadar kadaharan, teu aya ma’na.” Hidep nyaho yén upacara adat boga ma’na simbolik.",s:[["Upacara adat boga ma’na simbolik dina unsur-unsurna.",1],["Tumpeng dianggap ngabogaan ma’na barokah.",1],["Ma’na simbolik teu patali jeung unsur upacara adat.",0]],e:"Ma’na simbolik nyoko kana ma’na dina unsur upacara, upamana tumpeng. Hikmahna: ulah gancang nganggap hal nu teu dipikaharti salah."}
+];
+
+const $=id=>document.getElementById(id),L="ABCD";
+let i=0,ans=[],sc=[],done=[],T=2700,tm,user={};
+const names=["Pilihan Ganda","Pilihan Ganda Kompleks","Pernyataan Bener/Salah"],lv=["","Gampang","Sedeng","Pikasusah"];
+$("nm").addEventListener("input",e=>e.target.value=e.target.value.toUpperCase());
+$("go").onclick=()=>{const n=$("nm").value.trim();if(!n){$("nm").focus();return}
+user={n:n.toUpperCase(),k:$("kl").value};$("hn").textContent=user.n;$("hk").textContent=user.k;$("m").style.display="none";
+Q.forEach((q,x)=>ans[x]=q.t==1?null:q.t==2?[]:[null,null,null]);tick();tm=setInterval(tick,1000);render()};
+function tick(){const m=Math.floor(T/60),s=T%60;$("time").textContent="⏱ "+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");$("time").classList.toggle("low",T<=300);if(T--<=0)finish()}
+function render(){const q=Q[i],d=done[i];let h=`<div class="card"><span class="tag">Soal ${i+1}/30</span><span class="tag">${names[q.t-1]}</span><span class="tag">${lv[q.l]}</span><div class="q">${q.q}</div>`;
+if(q.t==1)q.o.forEach((o,k)=>{let c="opt";if(d)c+=k==q.a?" ok":ans[i]==k?" no":"";else if(ans[i]==k)c+=" sel";h+=`<label class="${c}"><input type="radio" name="r" ${ans[i]==k?"checked":""} ${d?"disabled":""} onchange="pick(${k})"><span><b>${L[k]}.</b> ${o}</span></label>`});
+if(q.t==2){h+=`<p style="color:var(--mut);font-size:.85rem;margin:0">Centang kabéh nu bener.</p>`;q.o.forEach((o,k)=>{const on=ans[i].includes(k),ok=q.a.includes(k);let c="opt";if(d)c+=ok?" ok":on?" no":"";else if(on)c+=" sel";h+=`<label class="${c}"><input type="checkbox" ${on?"checked":""} ${d?"disabled":""} onchange="pick(${k})"><span><b>${L[k]}.</b> ${o}</span></label>`})}
+if(q.t==3)q.s.forEach((s,k)=>{const v=ans[i][k];let c="st";if(d)c+=v===s[1]?" ok":" no";h+=`<div class="${c}">${k+1}. ${s[0]}<div>${[[1,"Bener"],[0,"Salah"]].map(([b,t])=>`<label class="${v===b?"sel":""}"><input type="radio" name="s${k}" ${d?"disabled":""} onclick="pick(${k},${b})">${t}</label>`).join("")}</div></div>`});
+if(d)h+=`<div class="exp">${sc[i]==1?"✅ Bener pisan!":sc[i]>0?"🟡 Sawaréh bener.":"❌ Acan bener."} <b>Pedaran:</b> ${q.e}</div>`;
+h+=`<div class="row"><button class="sec" onclick="go(-1)" ${i==0?"disabled":""}>← Sateuacanna</button>`;
+h+=d?(i==29?`<button onclick="finish()">Réngsé 🏁</button>`:`<button onclick="go(1)">Teraskeun →</button>`):`<button onclick="check()" ${ready()?"":"disabled"}>Cék Jawaban</button>`;
+h+=`</div></div><div class="nav">${Q.map((_,x)=>`<b class="${x==i?"cur ":""}${done[x]?(sc[x]==1?"c":sc[x]>0?"p":"w"):""}" onclick="i=${x};render()" style="cursor:pointer">${x+1}</b>`).join("")}</div>`;
+$("app").innerHTML=h;$("pb").style.width=done.filter(Boolean).length/30*100+"%"}
+function ready(){const a=ans[i],q=Q[i];return q.t==1?a!==null:q.t==2?a.length>0:a.every(v=>v!==null)}
+function pick(k,b){const q=Q[i];if(done[i])return;if(q.t==1)ans[i]=k;else if(q.t==2){const a=ans[i],p=a.indexOf(k);p<0?a.push(k):a.splice(p,1)}else ans[i][k]=b;render()}
+function check(){const q=Q[i],a=ans[i];let s=0;
+if(q.t==1)s=a==q.a?1:0;else if(q.t==2)s=a.length==q.a.length&&q.a.every(x=>a.includes(x))?1:0;else s=q.s.filter((x,k)=>a[k]===x[1]).length/3;
+sc[i]=s;done[i]=true;bump(s);render()}
+function go(d){i=Math.max(0,Math.min(29,i+d));render()}
+function finish(){clearInterval(tm);const tot=Math.round(sc.reduce((a,b)=>a+(b||0),0)/30*100),full=sc.filter(s=>s==1).length,part=sc.filter(s=>s>0&&s<1).length;
+const msg=tot>=85?"Luar biasa! Juara pisan! 🏆":tot>=70?"Hadé pisan, tetep sumanget! 🌟":tot>=50?"Lumayan, ayeuna diajar deui nya! 💪":"Ulah pegat harepan, hayu diajar deui! 📚";
+$("app").innerHTML=`<div class="card" style="text-align:center"><h2>Kuis Réngsé! 🎉</h2><p><b>${user.n}</b> — Kelas ${user.k}</p><div class="big">${tot}</div><p>${msg}</p>
+<p>✅ Bener pinuh: ${full} • 🟡 Sawaréh: ${part} • ❌ Salah/kosong: ${30-full-part}</p><p style="color:var(--mut);font-size:.85rem">Soal nu acan diwaler dianggap 0.</p><button onclick="location.reload()">Main Deui 🔁</button></div>`;$("pb").style.width="100%"}
+// Kanvas bola mumbul: unggal soal nu dijawab nambah hiji bola
+const cv=$("cv"),cx=cv.getContext("2d");let balls=[];
+function sz(){cv.width=cv.clientWidth*2;cv.height=180}addEventListener("resize",sz);sz();
+function bump(s){balls.push({x:Math.random()*(cv.width-40)+20,y:20,v:0,c:s==1?"#2bb673":s>0?"#ffc93c":"#e5484d"});balls.forEach(b=>b.v=-(s>0?16:6))}
+(function loop(){cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle="#8bd17c";cx.fillRect(0,cv.height-14,cv.width,14);
+balls.forEach(b=>{b.v+=.8;b.y+=b.v;if(b.y>cv.height-34){b.y=cv.height-34;b.v*=-.7;if(Math.abs(b.v)<1.5)b.v=0}
+cx.beginPath();cx.arc(b.x,b.y,18,0,7);cx.fillStyle=b.c;cx.fill();cx.strokeStyle="#2b2a4c";cx.lineWidth=3;cx.stroke()});
+if(!balls.length){cx.fillStyle="#6b6a8a";cx.font="22px sans-serif";cx.fillText("Jawab soal, bola bakal mumbul! 🏀",16,50)}
+requestAnimationFrame(loop)})();
+</script></body></html>
